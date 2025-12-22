@@ -9,8 +9,8 @@ import {
 } from 'n8n-workflow';
 
 export const BASE_TRIGGER_DESCRIPTION: INodeTypeBaseDescription = {
-	displayName: 'WAHA Trigger',
-	name: 'wahaTrigger',
+	displayName: 'WAHA Trigger(S)',
+	name: 'wahaTriggerSplit',
 	icon: 'file:waha.svg',
 	group: ['trigger'],
 	description: 'Handle WAHA events via webhooks',

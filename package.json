@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-waha-split",
-  "version": "2025.1222.12",
+  "version": "2025.1222.17",
   "description": "n8n to connect with WAHA (Whatsapp HTTP API)",
   "keywords": [
     "n8n-community-node-package"
