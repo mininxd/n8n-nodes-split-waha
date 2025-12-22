@@ -1,6 +1,6 @@
 {
-  "name": "n8n-nodes-split-waha",
-  "version": "2025.12_22.1",
+  "name": "@devlikeapro/n8n-nodes-waha",
+  "version": "0.1.0",
   "description": "n8n to connect with WAHA (Whatsapp HTTP API)",
   "keywords": [
     "n8n-community-node-package"
@@ -39,7 +39,32 @@
     ],
     "nodes": [
       "dist/nodes/WAHA/WAHA.node.js",
-      "dist/nodes/WAHA/WAHATrigger.node.js"
+      "dist/nodes/WAHA/WAHATrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHASessionStatusTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAMessageTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAMessageReactionTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAMessageAnyTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAMessageAckTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAMessageRevokedTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAGroupV2JoinTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAGroupV2LeaveTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAGroupV2UpdateTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAGroupV2ParticipantsTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAPresenceUpdateTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAPollVoteTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAPollVoteFailedTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAChatArchiveTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHACallReceivedTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHACallAcceptedTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHACallRejectedTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHALabelUpsertTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHALabelDeletedTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHALabelChatAddedTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHALabelChatDeletedTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAEngineEventTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAGroupJoinTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAGroupLeaveTrigger.node.js",
+      "dist/nodes/WAHA/triggers/WAHAStateChangeTrigger.node.js"
     ]
   },
   "devDependencies": {

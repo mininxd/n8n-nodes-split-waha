@@ -89,3 +89,5 @@ export function makeWebhookForEvents(events: string[]) {
 
 	return webhook;
 }
+
+// Exporting types for usage in triggers
