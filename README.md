@@ -23,7 +23,7 @@ using [**devlikeapro/n8n-openapi-node**](https://github.com/devlikeapro/n8n-open
 
 ![NPM Version](https://img.shields.io/npm/v/n8n-nodes-waha-split)
 
-![WAHA Workflow Example Screenshot](./waha-n8n-workflow-example.png)
+![WAHA Workflow Example Screenshot](https://github.com/mininxd/n8n-nodes-split-waha/blob/master/waha-n8n-workflow-example.png)
 
 ## Install WAHA n8n node
 Go to your **n8n** => **Settings** => **Community nodes** and install:
