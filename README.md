@@ -1,9 +1,9 @@
-# @devlikeapro/n8n-nodes-waha
+# n8n-nodes-waha-split
 <p align="center">
   <img src="https://github.com/devlikeapro/n8n-nodes-waha/blob/master/WAHA+n8n.png?raw=true" width='300'/>
 </p>
 
-This is a n8n community node. 
+This is a n8n community node.
 It lets you use [WAHA - WhatsApp HTTP API](https://waha.devlike.pro) in your n8n workflows.
 
 - [**WAHA**](https://waha.devlike.pro) - **WhatsApp API** that you can run in a click!
@@ -13,8 +13,6 @@ It lets you use [WAHA - WhatsApp HTTP API](https://waha.devlike.pro) in your n8n
 [**WAHA OpenAPI**](https://waha.devlike.pro/swagger/)
 using [**devlikeapro/n8n-openapi-node**](https://github.com/devlikeapro/n8n-openapi-node)
 
-![NPM Version](https://img.shields.io/npm/v/%40devlikeapro%2Fn8n-nodes-waha)
-
 <!-- toc -->
 
 - [Install WAHA n8n node](#install-waha-n8n-node)
@@ -23,13 +21,15 @@ using [**devlikeapro/n8n-openapi-node**](https://github.com/devlikeapro/n8n-open
 
 <!-- tocstop -->
 
+![NPM Version](https://img.shields.io/npm/v/n8n-nodes-waha-split)
+
 ![WAHA Workflow Example Screenshot](./waha-n8n-workflow-example.png)
 
 ## Install WAHA n8n node
 Go to your **n8n** => **Settings** => **Community nodes** and install:
 
 ```
-@devlikeapro/n8n-nodes-waha
+n8n-nodes-waha-split
 ```
 
 If you need help with that, check the
