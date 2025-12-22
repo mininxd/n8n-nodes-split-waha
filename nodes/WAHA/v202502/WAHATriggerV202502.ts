@@ -1,6 +1,6 @@
 import {
 	INodeType,
-	INodeTypeDescription, NodeConnectionType,
+	INodeTypeDescription, NodeConnectionTypes,
 } from 'n8n-workflow';
 
 import * as doc from './openapi.json';
@@ -19,7 +19,7 @@ function getEvents() {
 }
 
 const events = getEvents();
-const outputs = events.map((_) => NodeConnectionType.Main);
+const outputs = events.map((_) => NodeConnectionTypes.Main);
 const outputNames = events;
 
 
