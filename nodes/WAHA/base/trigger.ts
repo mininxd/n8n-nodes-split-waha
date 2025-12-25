@@ -20,7 +20,12 @@ export const TRIGGER_DESCRIPTION = {
 		name: 'WAHA Trigger',
 	},
 	inputs: [],
-	credentials: [],
+	credentials: [
+		{
+			name: 'wahaApi',
+			required: false,
+		},
+	],
 	webhooks: [
 		{
 			name: 'default' as WebhookType,
@@ -29,6 +34,23 @@ export const TRIGGER_DESCRIPTION = {
 			path: 'waha',
 		},
 	],
+};
+
+export const SESSION_PROPERTY: INodeProperties = {
+	displayName: 'Session',
+	name: 'session',
+	type: 'string',
+	default: 'default',
+	description: 'The session to listen to',
+};
+
+export const WEBHOOK_URL_PROPERTY: INodeProperties = {
+	displayName: 'Webhook URL Override',
+	name: 'webhookUrl',
+	type: 'string',
+	default: '',
+	description:
+		'Override the webhook URL sent to WAHA. Useful if using a tunnel or proxy. Leave empty to use n8n detected URL.',
 };
 
 export const CONFIGURE_WEBHOOK_NOTE: INodeProperties = {
@@ -66,7 +88,6 @@ export function makeEventNote(events: string[]): INodeProperties {
 export function makeWebhookForEvents(events: string[]) {
 	async function webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
 		const bodyData = this.getBodyData();
-
 		const eventType = bodyData.event as string | undefined;
 
 		if (eventType === undefined || !events.includes(eventType)) {
@@ -74,6 +95,21 @@ export function makeWebhookForEvents(events: string[]) {
 			// listening to it do not start the workflow.
 			return {};
 		}
+
+		// Filter by session if configured
+		try {
+			const session = this.getNodeParameter('session', 'default') as string;
+			const bodySession = bodyData.session as string | undefined;
+			// If the event has session info, and we configured a session, they must match.
+			// If event doesn't have session info (e.g. engine event might not?), we might skip check or assume match?
+			// Usually WAHA events have session.
+			if (bodySession && bodySession !== session) {
+				return {};
+			}
+		} catch (error) {
+			// Parameter likely doesn't exist on this node version, ignore
+		}
+
 		const eventIndex: number = events.indexOf(eventType);
 		const req = this.getRequestObject();
 
