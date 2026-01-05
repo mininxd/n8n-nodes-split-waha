@@ -59,63 +59,43 @@ const config: N8NPropertiesBuilderConfig = {
 const parser = new N8NPropertiesBuilder(doc, config);
 const properties = parser.build(customDefaults);
 
-// Patch "Send *" operations to support dynamic Content-Type
+// Patch "Send *" operations to support Binary Uploads (via Split Operation strategy)
 const chattingOp = properties.find((p) => p.name === 'operation' && p.displayOptions?.show?.resource?.includes('Chatting'));
 const supportedBinaryOps = ['Send Image', 'Send File', 'Send Voice', 'Send Video'];
-const supportedBinaryOpsValues: string[] = [];
+const newOptions: any[] = [];
 
 // @ts-ignore
 if (chattingOp && chattingOp.options) {
 	// @ts-ignore
 	chattingOp.options.forEach((option) => {
 		// @ts-ignore
-		if (supportedBinaryOps.includes(option.value as string)) {
-			// Collect the internal value for displayOptions logic
-			// @ts-ignore
-			supportedBinaryOpsValues.push(option.value as string);
+		if (supportedBinaryOps.includes((option as any).value as string)) {
+			// Create Binary version of the operation
+			const newOption = JSON.parse(JSON.stringify(option));
+			newOption.name = `${(option as any).name} (Binary)`;
+			newOption.value = `${(option as any).value}:Binary`;
 
-			// Change Content-Type to dynamic expression
-			// @ts-ignore
-			if (option.routing && option.routing.request) {
-				// @ts-ignore
-				if (!option.routing.request.headers) {
-					// @ts-ignore
-					option.routing.request.headers = {};
-				}
-				// @ts-ignore
-				// We need to set Content-Type to undefined for Binary mode to let the library calculate the boundary
-				option.routing.request.headers['Content-Type'] = '={{ $parameter.fileUploadMode === "Binary" ? undefined : "application/json" }}';
+			if (!newOption.routing) newOption.routing = {};
+			// Enable binary data sending
+			newOption.routing.sendBinaryData = true;
+			// Tell n8n which property holds the binary data key
+			newOption.routing.binaryPropertyName = 'binaryPropertyName';
+
+			// Remove Content-Type header if it exists to let n8n handle multipart boundary
+			if (newOption.routing.request && newOption.routing.request.headers) {
+				delete newOption.routing.request.headers['Content-Type'];
 			}
+
+			newOptions.push(newOption);
 		}
 	});
+	// Append the new binary operations
+	// @ts-ignore
+	chattingOp.options.push(...newOptions);
 }
 
-const fileUploadModeTemplate = {
-	displayName: 'File Upload Mode',
-	name: 'fileUploadMode',
-	type: 'options',
-	options: [
-		{
-			name: 'JSON',
-			value: 'JSON',
-		},
-		{
-			name: 'Binary',
-			value: 'Binary',
-		},
-	],
-	default: 'JSON',
-	description: 'Select how to upload the file. This feature usable with mininxd/waha v2026.1.5.',
-	displayOptions: {
-		show: {
-			resource: ['Chatting'],
-			// operation: will be set dynamically
-		},
-	},
-};
-
 const binaryPropTemplate = {
-	displayName: 'File',
+	displayName: 'Input Binary Field',
 	name: 'binaryPropertyName',
 	type: 'string',
 	default: 'data',
@@ -124,97 +104,60 @@ const binaryPropTemplate = {
 		show: {
 			resource: ['Chatting'],
 			// operation: will be set dynamically
-			fileUploadMode: ['Binary'],
 		},
 	},
-	routing: {
-		send: {
-			type: 'body',
-			property: 'file',
-			value: '={{ $binary[$value] }}',
-		},
-	},
-	description: 'Name of the binary property which contains the data to upload',
+	description: 'The name of the binary property which contains the file to be uploaded',
 };
 
-// Find all 'file' properties and patch them
+// Find all 'file' properties and insert 'binaryPropertyName' parameter
 // Iterate backwards to avoid index shifting issues when splicing
 for (let i = properties.length - 1; i >= 0; i--) {
 	const p = properties[i];
 	// Check if property is 'file' and belongs to 'Chatting'
 	if (p.name === 'file' && p.displayOptions?.show?.resource?.includes('Chatting')) {
-		// Check if it belongs to one of the supported operations
+		// Check which operations this 'file' property belongs to
 		// @ts-ignore
 		const ops = p.displayOptions.show.operation as string[];
-		const supportedOp = ops && ops.find((op) => supportedBinaryOpsValues.includes(op));
 
-		if (supportedOp) {
-			// Found a target 'file' property.
+		// Find overlap between this property's ops and our supported binary ops
+		const relevantOps = ops && ops.filter((op) => supportedBinaryOps.includes(op));
 
-			// 1. Create specific 'fileUploadMode' parameter
-			const modeParam = JSON.parse(JSON.stringify(fileUploadModeTemplate));
-			// @ts-ignore
-			modeParam.displayOptions.show.operation = [supportedOp];
+		if (relevantOps && relevantOps.length > 0) {
+			// Generate the corresponding :Binary operation values
+			const relevantBinaryOpsValues = relevantOps.map((op) => `${op}:Binary`);
 
-			// 2. Create specific 'binaryPropertyName' parameter
+			// Create specific 'binaryPropertyName' parameter for these operations
 			const binaryParam = JSON.parse(JSON.stringify(binaryPropTemplate));
 			// @ts-ignore
-			binaryParam.displayOptions.show.operation = [supportedOp];
+			binaryParam.displayOptions.show.operation = relevantBinaryOpsValues;
 
-			// 3. Insert 'fileUploadMode' BEFORE 'file' (at index i)
-			properties.splice(i, 0, modeParam);
-
-			// Now 'file' is at i + 1
-			const fileProp = properties[i + 1];
-
-			// 4. Modify 'file' (JSON) to show only when mode is JSON
-			// Break reference sharing for displayOptions
-			// @ts-ignore
-			if (fileProp.displayOptions) {
-				// @ts-ignore
-				fileProp.displayOptions = { ...fileProp.displayOptions };
-				// @ts-ignore
-				if (fileProp.displayOptions.show) {
-					// @ts-ignore
-					fileProp.displayOptions.show = { ...fileProp.displayOptions.show };
-				}
-			} else {
-				// @ts-ignore
-				fileProp.displayOptions = {};
-			}
-
-			// @ts-ignore
-			if (!fileProp.displayOptions.show) {
-				// @ts-ignore
-				fileProp.displayOptions.show = {};
-			}
-			// @ts-ignore
-			fileProp.displayOptions.show.fileUploadMode = ['JSON'];
-
-			// Patch existing routing to avoid sending JSON when hidden (Binary mode)
-			// @ts-ignore
-			if (!fileProp.routing) fileProp.routing = {};
-			// @ts-ignore
-			if (!fileProp.routing.send) fileProp.routing.send = {};
-
-			// @ts-ignore
-			let originalValue = fileProp.routing.send.value || '$value';
-			if (originalValue.startsWith('=')) {
-				originalValue = originalValue.slice(1);
-			}
-			if (originalValue.startsWith('{{') && originalValue.endsWith('}}')) {
-				originalValue = originalValue.slice(2, -2);
-			}
-			const innerValue = originalValue.trim();
-
-			// @ts-ignore
-			fileProp.routing.send.value = `={{ $parameter.fileUploadMode === 'Binary' ? undefined : ${innerValue} }}`;
-
-			// 5. Insert 'binaryPropertyName' AFTER 'file' (at index i + 2)
-			properties.splice(i + 2, 0, binaryParam);
+			// Insert 'binaryPropertyName' AFTER 'file' (at index i + 1)
+			properties.splice(i + 1, 0, binaryParam);
 		}
 	}
 }
+
+// Update existing parameters to show up for the new :Binary operations
+properties.forEach((p) => {
+	// Skip the 'file' parameter itself (we use binaryPropertyName instead)
+	if (p.name === 'file') return;
+
+	if (p.displayOptions?.show?.operation) {
+		const ops = p.displayOptions.show.operation as string[];
+		const newBinaryOps: string[] = [];
+
+		ops.forEach((op) => {
+			if (supportedBinaryOps.includes(op)) {
+				newBinaryOps.push(`${op}:Binary`);
+			}
+		});
+
+		if (newBinaryOps.length > 0) {
+			// Add the new binary operations to the existing list
+			ops.push(...newBinaryOps);
+		}
+	}
+});
 
 export class WAHAv202502 implements INodeType {
 	description: INodeTypeDescription = {
