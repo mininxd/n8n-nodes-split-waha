@@ -367,7 +367,7 @@ test('WAHAv202502.description.properties', () => {
 					"routing": {
 						"request": {
 							"headers": {
-								"Content-Type": "={{ $parameter.fileUploadMode === \"Binary\" ? \"multipart/form-data\" : \"application/json\" }}"
+                "Content-Type": "={{ $parameter.fileUploadMode === \"Binary\" ? undefined : \"application/json\" }}",
 							},
 							"method": "POST",
 							"url": "=/api/sendImage"
@@ -382,7 +382,7 @@ test('WAHAv202502.description.properties', () => {
 					"routing": {
 						"request": {
 							"headers": {
-								"Content-Type": "={{ $parameter.fileUploadMode === \"Binary\" ? \"multipart/form-data\" : \"application/json\" }}"
+                "Content-Type": "={{ $parameter.fileUploadMode === \"Binary\" ? undefined : \"application/json\" }}",
 							},
 							"method": "POST",
 							"url": "=/api/sendFile"
@@ -397,7 +397,7 @@ test('WAHAv202502.description.properties', () => {
 					"routing": {
 						"request": {
 							"headers": {
-								"Content-Type": "={{ $parameter.fileUploadMode === \"Binary\" ? \"multipart/form-data\" : \"application/json\" }}"
+                "Content-Type": "={{ $parameter.fileUploadMode === \"Binary\" ? undefined : \"application/json\" }}",
 							},
 							"method": "POST",
 							"url": "=/api/sendVoice"
@@ -412,7 +412,7 @@ test('WAHAv202502.description.properties', () => {
 					"routing": {
 						"request": {
 							"headers": {
-								"Content-Type": "={{ $parameter.fileUploadMode === \"Binary\" ? \"multipart/form-data\" : \"application/json\" }}"
+                "Content-Type": "={{ $parameter.fileUploadMode === \"Binary\" ? undefined : \"application/json\" }}",
 							},
 							"method": "POST",
 							"url": "=/api/sendVideo"
@@ -2786,7 +2786,7 @@ test('WAHAv202502.description.properties', () => {
 		},
 		{
 			"default": "JSON",
-			"description": "Select how to upload the file. This feature usable with mininxd/waha v2026.1.5",
+					"description": "Select how to upload the file. This feature usable with mininxd/waha v2026.1.5.",
 			"displayName": "File Upload Mode",
 			"displayOptions": {
 				"show": {
@@ -2987,7 +2987,7 @@ test('WAHAv202502.description.properties', () => {
 		},
 		{
 			"default": "JSON",
-			"description": "Select how to upload the file. This feature usable with mininxd/waha v2026.1.5",
+					"description": "Select how to upload the file. This feature usable with mininxd/waha v2026.1.5.",
 			"displayName": "File Upload Mode",
 			"displayOptions": {
 				"show": {
@@ -3188,7 +3188,7 @@ test('WAHAv202502.description.properties', () => {
 		},
 		{
 			"default": "JSON",
-			"description": "Select how to upload the file. This feature usable with mininxd/waha v2026.1.5",
+					"description": "Select how to upload the file. This feature usable with mininxd/waha v2026.1.5.",
 			"displayName": "File Upload Mode",
 			"displayOptions": {
 				"show": {
@@ -3365,7 +3365,7 @@ test('WAHAv202502.description.properties', () => {
 		},
 		{
 			"default": "JSON",
-			"description": "Select how to upload the file. This feature usable with mininxd/waha v2026.1.5",
+					"description": "Select how to upload the file. This feature usable with mininxd/waha v2026.1.5.",
 			"displayName": "File Upload Mode",
 			"displayOptions": {
 				"show": {

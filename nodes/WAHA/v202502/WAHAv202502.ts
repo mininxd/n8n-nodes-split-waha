@@ -68,7 +68,8 @@ const supportedBinaryOpsValues: string[] = [];
 if (chattingOp && chattingOp.options) {
 	// @ts-ignore
 	chattingOp.options.forEach((option) => {
-		if (supportedBinaryOps.includes(option.name)) {
+		// @ts-ignore
+		if (supportedBinaryOps.includes(option.value as string)) {
 			// Collect the internal value for displayOptions logic
 			// @ts-ignore
 			supportedBinaryOpsValues.push(option.value as string);
@@ -82,7 +83,8 @@ if (chattingOp && chattingOp.options) {
 					option.routing.request.headers = {};
 				}
 				// @ts-ignore
-				option.routing.request.headers['Content-Type'] = '={{ $parameter.fileUploadMode === "Binary" ? "multipart/form-data" : "application/json" }}';
+				// We need to set Content-Type to undefined for Binary mode to let the library calculate the boundary
+				option.routing.request.headers['Content-Type'] = '={{ $parameter.fileUploadMode === "Binary" ? undefined : "application/json" }}';
 			}
 		}
 	});
