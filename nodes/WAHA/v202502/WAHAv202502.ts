@@ -59,80 +59,86 @@ const config: N8NPropertiesBuilderConfig = {
 const parser = new N8NPropertiesBuilder(doc, config);
 const properties = parser.build(customDefaults);
 
-// Add Binary Support
+// Patch "Send *" operations to support dynamic Content-Type
 const chattingOp = properties.find((p) => p.name === 'operation' && p.displayOptions?.show?.resource?.includes('Chatting'));
+const supportedBinaryOps = ['Send Image', 'Send File', 'Send Voice', 'Send Video'];
+
 // @ts-ignore
 if (chattingOp && chattingOp.options) {
-	const endpoints = [
-		{ name: 'Send Image', path: '/api/sendImage' },
-		{ name: 'Send File', path: '/api/sendFile' },
-		{ name: 'Send Voice', path: '/api/sendVoice' },
-		{ name: 'Send Video', path: '/api/sendVideo' },
-	];
-
-	endpoints.forEach((ep) => {
-		// Add (Binary) variant
-		// @ts-ignore
-		chattingOp.options.push({
-			name: `${ep.name} (Binary)`,
-			value: `${ep.name} (Binary)`,
-			action: `${ep.name} (Binary)`,
-			description: 'This feature usable with mininxd/waha v2026.1.5',
-			routing: {
-				request: {
-					method: 'POST',
-					url: `=${ep.path}`,
-					headers: {
-						'Content-Type': 'multipart/form-data',
-					},
-				},
-				send: {
-					type: 'body',
-					property: 'file',
-				},
-			},
-		});
+	// @ts-ignore
+	chattingOp.options.forEach((option) => {
+		if (supportedBinaryOps.includes(option.name)) {
+			// Change Content-Type to dynamic expression
+			// @ts-ignore
+			if (option.routing && option.routing.request) {
+				// @ts-ignore
+				if (!option.routing.request.headers) {
+					// @ts-ignore
+					option.routing.request.headers = {};
+				}
+				// @ts-ignore
+				option.routing.request.headers['Content-Type'] = '={{ $parameter.fileUploadMode === "Binary" ? "multipart/form-data" : "application/json" }}';
+			}
+		}
 	});
 }
 
-// Update existing properties to show up for new operations
-properties.forEach((p) => {
+// Find the 'file' property to insert 'fileUploadMode' before it and update it
+const filePropIndex = properties.findIndex((p) => p.name === 'file');
+if (filePropIndex !== -1) {
+	// Add 'fileUploadMode' parameter before 'file'
+	properties.splice(filePropIndex, 0, {
+		displayName: 'File Upload Mode',
+		name: 'fileUploadMode',
+		type: 'options',
+		options: [
+			{
+				name: 'JSON',
+				value: 'JSON',
+			},
+			{
+				name: 'Binary',
+				value: 'Binary',
+			},
+		],
+		default: 'JSON',
+		description: 'Select how to upload the file. This feature usable with mininxd/waha v2026.1.5',
+		displayOptions: {
+			show: {
+				resource: ['Chatting'],
+				operation: supportedBinaryOps,
+			},
+		},
+	});
+
+	const fileProp = properties[filePropIndex + 1]; // Shifted by 1
+
+	// Break reference sharing for displayOptions
 	// @ts-ignore
-	if (p.displayOptions?.show?.operation) {
+	if (fileProp.displayOptions) {
 		// @ts-ignore
-		const ops = p.displayOptions.show.operation;
-		const newOps: string[] = [];
-		if (p.name !== 'file') {
-			// Exclude 'file' property
-			if (ops.includes('Send Image')) newOps.push('Send Image (Binary)');
-			if (ops.includes('Send File')) newOps.push('Send File (Binary)');
-			if (ops.includes('Send Voice')) newOps.push('Send Voice (Binary)');
-			if (ops.includes('Send Video')) newOps.push('Send Video (Binary)');
-		}
-
-		if (newOps.length > 0) {
-			// Break reference sharing for displayOptions and show to avoid affecting other properties (like 'file')
-			// @ts-ignore
-			if (p.displayOptions) {
-				// @ts-ignore
-				p.displayOptions = { ...p.displayOptions };
-				// @ts-ignore
-				if (p.displayOptions.show) {
-					// @ts-ignore
-					p.displayOptions.show = { ...p.displayOptions.show };
-				}
-			}
-
-			// Create a new array
-			// @ts-ignore
-			p.displayOptions.show.operation = [...new Set([...ops, ...newOps])];
-		}
+		fileProp.displayOptions = { ...fileProp.displayOptions };
+	} else {
+		// @ts-ignore
+		fileProp.displayOptions = {};
 	}
-});
 
-// Add properties for binary inputs
+	// @ts-ignore
+	fileProp.displayOptions.hide = {
+		fileUploadMode: ['Binary'],
+	};
+
+	// Patch existing routing to avoid sending JSON when hidden
+	// @ts-ignore
+	if (fileProp.routing && fileProp.routing.send && fileProp.routing.send.value) {
+		// @ts-ignore
+		fileProp.routing.send.value = `={{ $parameter.fileUploadMode === 'Binary' ? undefined : JSON.parse($value) }}`;
+	}
+}
+
+// Add 'binaryPropertyName' parameter
 properties.push({
-	displayName: 'File (Binary)',
+	displayName: 'Binary Property',
 	name: 'binaryPropertyName',
 	type: 'string',
 	default: 'data',
@@ -140,15 +146,18 @@ properties.push({
 	displayOptions: {
 		show: {
 			resource: ['Chatting'],
-			operation: [
-				'Send Image (Binary)',
-				'Send File (Binary)',
-				'Send Voice (Binary)',
-				'Send Video (Binary)',
-			],
+			operation: supportedBinaryOps,
+			fileUploadMode: ['Binary'],
 		},
 	},
-	description: 'Name of the binary property to upload',
+	routing: {
+		send: {
+			type: 'body',
+			property: 'file',
+			value: '={{ $binary[$value] }}',
+		},
+	},
+	description: 'Name of the binary property which contains the data to upload',
 });
 
 export class WAHAv202502 implements INodeType {
