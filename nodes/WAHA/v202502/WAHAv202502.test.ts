@@ -2,6 +2,7 @@ import { WAHAv202502 } from './WAHAv202502';
 
 test('WAHAv202502.description.properties', () => {
 	const node = new WAHAv202502();
+	const properties = JSON.parse(JSON.stringify(node.description.properties));
 	const expected = [
 		{
 			"default": "",
@@ -365,6 +366,9 @@ test('WAHAv202502.description.properties', () => {
 					"name": "Send Image",
 					"routing": {
 						"request": {
+							"headers": {
+								"Content-Type": "={{ $parameter.fileUploadMode === \"Binary\" ? \"multipart/form-data\" : \"application/json\" }}"
+							},
 							"method": "POST",
 							"url": "=/api/sendImage"
 						}
@@ -377,6 +381,9 @@ test('WAHAv202502.description.properties', () => {
 					"name": "Send File",
 					"routing": {
 						"request": {
+							"headers": {
+								"Content-Type": "={{ $parameter.fileUploadMode === \"Binary\" ? \"multipart/form-data\" : \"application/json\" }}"
+							},
 							"method": "POST",
 							"url": "=/api/sendFile"
 						}
@@ -389,6 +396,9 @@ test('WAHAv202502.description.properties', () => {
 					"name": "Send Voice",
 					"routing": {
 						"request": {
+							"headers": {
+								"Content-Type": "={{ $parameter.fileUploadMode === \"Binary\" ? \"multipart/form-data\" : \"application/json\" }}"
+							},
 							"method": "POST",
 							"url": "=/api/sendVoice"
 						}
@@ -401,6 +411,9 @@ test('WAHAv202502.description.properties', () => {
 					"name": "Send Video",
 					"routing": {
 						"request": {
+							"headers": {
+								"Content-Type": "={{ $parameter.fileUploadMode === \"Binary\" ? \"multipart/form-data\" : \"application/json\" }}"
+							},
 							"method": "POST",
 							"url": "=/api/sendVideo"
 						}
@@ -2772,10 +2785,40 @@ test('WAHAv202502.description.properties', () => {
 			"type": "string"
 		},
 		{
+			"default": "JSON",
+			"description": "Select how to upload the file. This feature usable with mininxd/waha v2026.1.5",
+			"displayName": "File Upload Mode",
+			"displayOptions": {
+				"show": {
+					"operation": [
+						"Send Image"
+					],
+					"resource": [
+						"Chatting"
+					]
+				}
+			},
+			"name": "fileUploadMode",
+			"options": [
+				{
+					"name": "JSON",
+					"value": "JSON"
+				},
+				{
+					"name": "Binary",
+					"value": "Binary"
+				}
+			],
+			"type": "options"
+		},
+		{
 			"default": "{\n  \"mimetype\": \"image/jpeg\",\n  \"filename\": \"filename.jpg\",\n  \"url\": \"https://github.com/devlikeapro/waha/raw/core/examples/waha.jpg\"\n}",
 			"displayName": "File",
 			"displayOptions": {
 				"show": {
+					"fileUploadMode": [
+						"JSON"
+					],
 					"operation": [
 						"Send Image"
 					],
@@ -2791,10 +2834,38 @@ test('WAHAv202502.description.properties', () => {
 					"property": "file",
 					"propertyInDotNotation": false,
 					"type": "body",
-					"value": "={{ JSON.parse($value) }}"
+					"value": "={{ $parameter.fileUploadMode === 'Binary' ? undefined : JSON.parse($value) }}"
 				}
 			},
 			"type": "json"
+		},
+		{
+			"default": "data",
+			"description": "Name of the binary property which contains the data to upload",
+			"displayName": "File",
+			"displayOptions": {
+				"show": {
+					"fileUploadMode": [
+						"Binary"
+					],
+					"operation": [
+						"Send Image"
+					],
+					"resource": [
+						"Chatting"
+					]
+				}
+			},
+			"name": "binaryPropertyName",
+			"required": true,
+			"routing": {
+				"send": {
+					"property": "file",
+					"type": "body",
+					"value": "={{ $binary[$value] }}"
+				}
+			},
+			"type": "string"
 		},
 		{
 			"default": "",
@@ -2915,10 +2986,40 @@ test('WAHAv202502.description.properties', () => {
 			"type": "string"
 		},
 		{
+			"default": "JSON",
+			"description": "Select how to upload the file. This feature usable with mininxd/waha v2026.1.5",
+			"displayName": "File Upload Mode",
+			"displayOptions": {
+				"show": {
+					"operation": [
+						"Send File"
+					],
+					"resource": [
+						"Chatting"
+					]
+				}
+			},
+			"name": "fileUploadMode",
+			"options": [
+				{
+					"name": "JSON",
+					"value": "JSON"
+				},
+				{
+					"name": "Binary",
+					"value": "Binary"
+				}
+			],
+			"type": "options"
+		},
+		{
 			"default": "{\n  \"mimetype\": \"image/jpeg\",\n  \"filename\": \"filename.jpg\",\n  \"url\": \"https://github.com/devlikeapro/waha/raw/core/examples/waha.jpg\"\n}",
 			"displayName": "File",
 			"displayOptions": {
 				"show": {
+					"fileUploadMode": [
+						"JSON"
+					],
 					"operation": [
 						"Send File"
 					],
@@ -2934,10 +3035,38 @@ test('WAHAv202502.description.properties', () => {
 					"property": "file",
 					"propertyInDotNotation": false,
 					"type": "body",
-					"value": "={{ JSON.parse($value) }}"
+					"value": "={{ $parameter.fileUploadMode === 'Binary' ? undefined : JSON.parse($value) }}"
 				}
 			},
 			"type": "json"
+		},
+		{
+			"default": "data",
+			"description": "Name of the binary property which contains the data to upload",
+			"displayName": "File",
+			"displayOptions": {
+				"show": {
+					"fileUploadMode": [
+						"Binary"
+					],
+					"operation": [
+						"Send File"
+					],
+					"resource": [
+						"Chatting"
+					]
+				}
+			},
+			"name": "binaryPropertyName",
+			"required": true,
+			"routing": {
+				"send": {
+					"property": "file",
+					"type": "body",
+					"value": "={{ $binary[$value] }}"
+				}
+			},
+			"type": "string"
 		},
 		{
 			"default": "",
@@ -3058,10 +3187,40 @@ test('WAHAv202502.description.properties', () => {
 			"type": "string"
 		},
 		{
+			"default": "JSON",
+			"description": "Select how to upload the file. This feature usable with mininxd/waha v2026.1.5",
+			"displayName": "File Upload Mode",
+			"displayOptions": {
+				"show": {
+					"operation": [
+						"Send Voice"
+					],
+					"resource": [
+						"Chatting"
+					]
+				}
+			},
+			"name": "fileUploadMode",
+			"options": [
+				{
+					"name": "JSON",
+					"value": "JSON"
+				},
+				{
+					"name": "Binary",
+					"value": "Binary"
+				}
+			],
+			"type": "options"
+		},
+		{
 			"default": "{\n  \"mimetype\": \"audio/ogg; codecs=opus\",\n  \"url\": \"https://github.com/devlikeapro/waha/raw/core/examples/dev.likeapro.opus\"\n}",
 			"displayName": "File",
 			"displayOptions": {
 				"show": {
+					"fileUploadMode": [
+						"JSON"
+					],
 					"operation": [
 						"Send Voice"
 					],
@@ -3077,10 +3236,38 @@ test('WAHAv202502.description.properties', () => {
 					"property": "file",
 					"propertyInDotNotation": false,
 					"type": "body",
-					"value": "={{ JSON.parse($value) }}"
+					"value": "={{ $parameter.fileUploadMode === 'Binary' ? undefined : JSON.parse($value) }}"
 				}
 			},
 			"type": "json"
+		},
+		{
+			"default": "data",
+			"description": "Name of the binary property which contains the data to upload",
+			"displayName": "File",
+			"displayOptions": {
+				"show": {
+					"fileUploadMode": [
+						"Binary"
+					],
+					"operation": [
+						"Send Voice"
+					],
+					"resource": [
+						"Chatting"
+					]
+				}
+			},
+			"name": "binaryPropertyName",
+			"required": true,
+			"routing": {
+				"send": {
+					"property": "file",
+					"type": "body",
+					"value": "={{ $binary[$value] }}"
+				}
+			},
+			"type": "string"
 		},
 		{
 			"default": "",
@@ -3177,10 +3364,40 @@ test('WAHAv202502.description.properties', () => {
 			"type": "string"
 		},
 		{
+			"default": "JSON",
+			"description": "Select how to upload the file. This feature usable with mininxd/waha v2026.1.5",
+			"displayName": "File Upload Mode",
+			"displayOptions": {
+				"show": {
+					"operation": [
+						"Send Video"
+					],
+					"resource": [
+						"Chatting"
+					]
+				}
+			},
+			"name": "fileUploadMode",
+			"options": [
+				{
+					"name": "JSON",
+					"value": "JSON"
+				},
+				{
+					"name": "Binary",
+					"value": "Binary"
+				}
+			],
+			"type": "options"
+		},
+		{
 			"default": "{\n  \"mimetype\": \"video/mp4\",\n  \"filename\": \"video.mp4\",\n  \"url\": \"https://github.com/devlikeapro/waha/raw/core/examples/video.mp4\"\n}",
 			"displayName": "File",
 			"displayOptions": {
 				"show": {
+					"fileUploadMode": [
+						"JSON"
+					],
 					"operation": [
 						"Send Video"
 					],
@@ -3196,10 +3413,38 @@ test('WAHAv202502.description.properties', () => {
 					"property": "file",
 					"propertyInDotNotation": false,
 					"type": "body",
-					"value": "={{ JSON.parse($value) }}"
+					"value": "={{ $parameter.fileUploadMode === 'Binary' ? undefined : JSON.parse($value) }}"
 				}
 			},
 			"type": "json"
+		},
+		{
+			"default": "data",
+			"description": "Name of the binary property which contains the data to upload",
+			"displayName": "File",
+			"displayOptions": {
+				"show": {
+					"fileUploadMode": [
+						"Binary"
+					],
+					"operation": [
+						"Send Video"
+					],
+					"resource": [
+						"Chatting"
+					]
+				}
+			},
+			"name": "binaryPropertyName",
+			"required": true,
+			"routing": {
+				"send": {
+					"property": "file",
+					"type": "body",
+					"value": "={{ $binary[$value] }}"
+				}
+			},
+			"type": "string"
 		},
 		{
 			"default": "",
@@ -10672,5 +10917,5 @@ test('WAHAv202502.description.properties', () => {
 			}
 		}
 	]
-	expect(node.description.properties).toEqual(expected);
+	expect(properties).toEqual(expected);
 });
