@@ -103,7 +103,7 @@ const fileUploadModeTemplate = {
 		},
 	],
 	default: 'JSON',
-	description: 'Select how to upload the file. This feature usable with mininxd/waha v2026.1.5',
+	description: 'Select how to upload the file. This feature usable with mininxd/waha v2026.1.5.',
 	displayOptions: {
 		show: {
 			resource: ['Chatting'],
