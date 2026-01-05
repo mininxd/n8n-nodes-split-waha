@@ -544,56 +544,56 @@ test('WAHAv202502.description.properties', () => {
                 "name": "Send Image (Binary)",
                 "value": "Send Image:Binary",
                 "action": "Send an image",
-                "description": "Either from an URL or base64 data - look at the request schemas for details.",
+                "description": "Binary file operation is usable with <a href=\"https://hub.docker.com/r/mininxd/waha\">mininxd/waha</a> v2026.1.5+. Uploads file via multipart/form-data.",
                 "routing": {
                     "request": {
                         "method": "POST",
                         "url": "=/api/sendImage"
                     },
                     "sendBinaryData": true,
-                    "binaryPropertyName": "binaryPropertyName"
+                    "binaryPropertyName": "={{$parameter.binaryPropertyName}}"
                 }
             },
             {
                 "name": "Send File (Binary)",
                 "value": "Send File:Binary",
                 "action": "Send a file",
-                "description": "Either from an URL or base64 data - look at the request schemas for details.",
+                "description": "Binary file operation is usable with <a href=\"https://hub.docker.com/r/mininxd/waha\">mininxd/waha</a> v2026.1.5+. Uploads file via multipart/form-data.",
                 "routing": {
                     "request": {
                         "method": "POST",
                         "url": "=/api/sendFile"
                     },
                     "sendBinaryData": true,
-                    "binaryPropertyName": "binaryPropertyName"
+                    "binaryPropertyName": "={{$parameter.binaryPropertyName}}"
                 }
             },
             {
                 "name": "Send Voice (Binary)",
                 "value": "Send Voice:Binary",
                 "action": "Send an voice message",
-                "description": "Either from an URL or base64 data - look at the request schemas for details.",
+                "description": "Binary file operation is usable with <a href=\"https://hub.docker.com/r/mininxd/waha\">mininxd/waha</a> v2026.1.5+. Uploads file via multipart/form-data.",
                 "routing": {
                     "request": {
                         "method": "POST",
                         "url": "=/api/sendVoice"
                     },
                     "sendBinaryData": true,
-                    "binaryPropertyName": "binaryPropertyName"
+                    "binaryPropertyName": "={{$parameter.binaryPropertyName}}"
                 }
             },
             {
                 "name": "Send Video (Binary)",
                 "value": "Send Video:Binary",
                 "action": "Send a video",
-                "description": "Either from an URL or base64 data - look at the request schemas for details.",
+                "description": "Binary file operation is usable with <a href=\"https://hub.docker.com/r/mininxd/waha\">mininxd/waha</a> v2026.1.5+. Uploads file via multipart/form-data.",
                 "routing": {
                     "request": {
                         "method": "POST",
                         "url": "=/api/sendVideo"
                     },
                     "sendBinaryData": true,
-                    "binaryPropertyName": "binaryPropertyName"
+                    "binaryPropertyName": "={{$parameter.binaryPropertyName}}"
                 }
             }
         ],
@@ -2889,7 +2889,7 @@ test('WAHAv202502.description.properties', () => {
                 ]
             }
         },
-        "description": "The name of the binary property which contains the file to be uploaded"
+        "description": "The name of the binary property which contains the file to be uploaded. Binary file operation is usable with <a href=\"https://hub.docker.com/r/mininxd/waha\">mininxd/waha</a> v2026.1.5+."
     },
     {
         "displayName": "Reply To",
@@ -3080,7 +3080,7 @@ test('WAHAv202502.description.properties', () => {
                 ]
             }
         },
-        "description": "The name of the binary property which contains the file to be uploaded"
+        "description": "The name of the binary property which contains the file to be uploaded. Binary file operation is usable with <a href=\"https://hub.docker.com/r/mininxd/waha\">mininxd/waha</a> v2026.1.5+."
     },
     {
         "displayName": "Reply To",
@@ -3267,7 +3267,7 @@ test('WAHAv202502.description.properties', () => {
                 ]
             }
         },
-        "description": "The name of the binary property which contains the file to be uploaded"
+        "description": "The name of the binary property which contains the file to be uploaded. Binary file operation is usable with <a href=\"https://hub.docker.com/r/mininxd/waha\">mininxd/waha</a> v2026.1.5+."
     },
     {
         "displayName": "Reply To",
@@ -3432,7 +3432,7 @@ test('WAHAv202502.description.properties', () => {
                 ]
             }
         },
-        "description": "The name of the binary property which contains the file to be uploaded"
+        "description": "The name of the binary property which contains the file to be uploaded. Binary file operation is usable with <a href=\"https://hub.docker.com/r/mininxd/waha\">mininxd/waha</a> v2026.1.5+."
     },
     {
         "displayName": "Reply To",

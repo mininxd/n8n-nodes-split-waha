@@ -74,12 +74,14 @@ if (chattingOp && chattingOp.options) {
 			const newOption = JSON.parse(JSON.stringify(option));
 			newOption.name = `${(option as any).name} (Binary)`;
 			newOption.value = `${(option as any).value}:Binary`;
+			newOption.description =
+				'Binary file operation is usable with <a href="https://hub.docker.com/r/mininxd/waha">mininxd/waha</a> v2026.1.5+. Uploads file via multipart/form-data.';
 
 			if (!newOption.routing) newOption.routing = {};
 			// Enable binary data sending
 			newOption.routing.sendBinaryData = true;
 			// Tell n8n which property holds the binary data key
-			newOption.routing.binaryPropertyName = 'binaryPropertyName';
+			newOption.routing.binaryPropertyName = '={{$parameter.binaryPropertyName}}';
 
 			// Remove Content-Type header if it exists to let n8n handle multipart boundary
 			if (newOption.routing.request && newOption.routing.request.headers) {
@@ -106,7 +108,8 @@ const binaryPropTemplate = {
 			// operation: will be set dynamically
 		},
 	},
-	description: 'The name of the binary property which contains the file to be uploaded',
+	description:
+		'The name of the binary property which contains the file to be uploaded. Binary file operation is usable with <a href="https://hub.docker.com/r/mininxd/waha">mininxd/waha</a> v2026.1.5+.',
 };
 
 // Find all 'file' properties and insert 'binaryPropertyName' parameter
