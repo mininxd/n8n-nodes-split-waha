@@ -1,6 +1,6 @@
 # n8n-nodes-waha-split
 <p align="center">
-  <img src="https://github.com/devlikeapro/n8n-nodes-waha/blob/master/WAHA+n8n.png?raw=true" width='300'/>
+  <img src="https://github.com/devlikeapro/n8n-nodes-waha/blob/main/WAHA+n8n.png?raw=true" width='300'/>
 </p>
 
 This is a n8n community node.
@@ -38,7 +38,7 @@ If you need help with that, check the
 ## Links
 - [**WAHA + n8n: No Code Low Code WhatsApp Automation Step-By-Step Guide**](https://waha.devlike.pro/blog/waha-n8n/)
 - [**🧩 WAHA + n8n Integration**](https://waha.devlike.pro/docs/integrations/n8n/)
-- [**WAHA n8n Workflow Templates**](http://waha-n8n-templates.devlike.pro/)
+- [**WAHA n8n Workflow Templates**](https://github.com/mininxd/waha-n8n-templates)
 
 ## Workflow Examples
-👉 Check out [**n8n-workflows**](http://waha-n8n-templates.devlike.pro/) folder for examples.
+👉 Check out [**n8n-workflows**](https://github.com/mininxd/waha-n8n-templates) folder for examples.
